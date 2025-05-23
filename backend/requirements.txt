@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+openai
+python-dotenv
+beautifulsoup4
+requests
+faiss-cpu
+tiktoken
+python-jose
+passlib
+bcrypt
+pydantic-settings
+pydantic[email]  # For EmailStr validation 
+fpdf
+aiofiles>=23.2.1  # For async file operations
+aiohttp>=3.9.1    # For async HTTP operations
+backoff==2.2.1
