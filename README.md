@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dashboard App
+
+A modern, full-stack dashboard application built with JavaScript/TypeScript, React, and Next.js. This project provides code quality, security, and health insights for your repositories, with a beautiful and interactive UI.
+
+## Features
+- Code quality and security analysis
+- Health and documentation insights
+- Interactive dashboard UI
+- Integration with GitHub
+- Modern tech stack: React, Next.js, TypeScript
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js (v16 or higher recommended)
+- npm or yarn
 
+### Installation
 ```bash
+# Clone the repository
+git clone https://github.com/sayan-tan/dashboardApp.git
+cd dashboardApp
+
+# Install dependencies
+npm install
+# or
+yarn install
+```
+
+### Running the App
+```bash
+# Start the development server
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app will be available at [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Building for Production
+```bash
+npm run build
+npm start
+# or
+yarn build
+yarn start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
+```
+/ (root)
+├── src/                # Application source code
+├── public/             # Static assets
+├── .gitignore          # Ignored files
+├── README.md           # Project documentation
+├── package.json        # Project metadata and scripts
+└── ...
+```
 
-## Learn More
+## Contributing
+Contributions are welcome! Please open issues and submit pull requests for improvements or bug fixes.
 
-To learn more about Next.js, take a look at the following resources:
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/YourFeature`)
+3. Commit your changes (`git commit -am 'Add new feature'`)
+4. Push to the branch (`git push origin feature/YourFeature`)
+5. Open a pull request
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+This project is licensed under the MIT License.
