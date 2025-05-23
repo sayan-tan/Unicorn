@@ -2,15 +2,15 @@
 GitHub Pull Requests API
 
 Purpose:
-    This API helps you see the pull requests for a GitHub project. Pull requests are suggestions for changes to the code, made by contributors, that can be reviewed and merged into the main project.
+    This API helps you see the open and closed pull requests (PRs) in a GitHub project.
 
 How it works:
     1. You provide a link to a GitHub repository and a personal access token (PAT) for access.
-    2. The API connects to GitHub and fetches a list of pull requests for that repository.
-    3. It returns details about each pull request, such as its title, status (open or merged), and who created it.
+    2. The API connects to GitHub and fetches a list of PRs for that repository.
+    3. It returns details about each PR, such as its title, status, and who created it.
 
 Intention:
-    The goal is to help you track new features, bug fixes, and improvements being proposed for a project, making it easier to manage collaboration and code review.
+    The goal is to help you track what changes are being proposed and merged into a project, making it easier to manage and review work.
 """
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, HttpUrl

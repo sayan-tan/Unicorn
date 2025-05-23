@@ -2,20 +2,21 @@
 GitHub Contributors API
 
 Purpose:
-    This API shows you the people who have contributed to a GitHub project. Contributors are users who have made changes or improvements to the code.
+    This API helps you see who has contributed to a GitHub repository.
 
 How it works:
     1. You provide a link to a GitHub repository and a personal access token (PAT) for access.
-    2. The API connects to GitHub and fetches a list of contributors and their contributions.
-    3. It returns information about each contributor, such as their username, profile picture, and how many changes they made.
+    2. The API connects to GitHub and fetches a list of contributors for that repository.
+    3. It returns details about each contributor, such as their username, number of contributions, and when they first contributed.
 
 Intention:
-    The goal is to help you see who is working on a project and how much they have contributed, making it easier to recognize active team members or top contributors.
+    The goal is to help you track who is actively working on a project, making it easier to manage and engage with your community.
 """
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, HttpUrl
 from urllib.parse import urlparse
 import httpx
+from datetime import datetime, timedelta
 
 router = APIRouter()
 GITHUB_GRAPHQL_URL = "https://api.github.com/graphql"

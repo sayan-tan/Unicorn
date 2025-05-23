@@ -15,6 +15,28 @@ A modern, full-stack dashboard application built with JavaScript/TypeScript, Rea
 - Node.js (v16 or higher recommended)
 - npm or yarn
 
+### Environment Setup
+The application requires a GitHub Personal Access Token to be set up. Follow these steps to configure your environment:
+
+1. Create a `.env` file in the root directory of the project
+2. Add your GitHub Personal Access Token to the `.env` file:
+```bash
+# GitHub Configuration
+GITHUB_TOKEN=your_github_personal_access_token
+```
+
+Important notes:
+- Never commit your `.env` file to version control
+- Keep your tokens and secrets secure
+- The `.env` file is already included in `.gitignore`
+
+To generate a GitHub token:
+1. Go to GitHub Settings > Developer Settings > Personal Access Tokens
+2. Generate a new token with the following permissions:
+   - `repo` (for private repositories)
+   - `read:org` (for organization access)
+   - `read:user` (for user data)
+
 ### Installation
 ```bash
 # Clone the repository
