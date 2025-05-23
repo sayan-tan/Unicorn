@@ -67,3 +67,6 @@ next-env.d.ts
 
 # Bun
 .bun
+
+# Python bytecode cache directories
+__pycache__/
