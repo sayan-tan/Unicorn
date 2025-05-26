@@ -17,9 +17,9 @@ from pydantic import BaseModel, HttpUrl
 from urllib.parse import urlparse
 import httpx
 from datetime import datetime, timedelta
+from ...core.config import settings
 
 router = APIRouter()
-GITHUB_GRAPHQL_URL = "https://api.github.com/graphql"
 
 class RepoRequest(BaseModel):
     repo_url: HttpUrl
@@ -73,7 +73,7 @@ async def get_issues(data: RepoRequest):
     async with httpx.AsyncClient() as client:
         while True:
             response = await client.post(
-                GITHUB_GRAPHQL_URL,
+                settings.GITHUB_GRAPHQL_URL,
                 json={"query": query, "variables": variables},
                 headers=headers
             )

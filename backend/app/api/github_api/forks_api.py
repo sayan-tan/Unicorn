@@ -16,9 +16,9 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, HttpUrl
 from urllib.parse import urlparse
 import httpx
+from ...core.config import settings
 
 router = APIRouter()
-GITHUB_GRAPHQL_URL = "https://api.github.com/graphql"
 
 class RepoRequest(BaseModel):
     repo_url: HttpUrl
@@ -64,7 +64,7 @@ async def get_forks(data: RepoRequest):
     }
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            GITHUB_GRAPHQL_URL,
+            settings.GITHUB_GRAPHQL_URL,
             json={"query": query, "variables": variables},
             headers=headers
         )

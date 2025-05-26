@@ -23,6 +23,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import SecurityIcon from '@mui/icons-material/Security';
 import { PRIMARY_COLOR, SECONDARY_COLOR, TERTIARY_COLOR, ICON_COLOR } from './colors';
 import Image from 'next/image';
+import config from '../config';
 
 interface Repository {
   url: string;
@@ -52,7 +53,7 @@ export function AddRepoDialogBox({ open, onClose, onAdd }: AddRepoDialogBoxProps
       }
 
       // Check if repo already exists in localStorage
-      const existingRepos = JSON.parse(localStorage.getItem('repos') || '[]') as Repository[];
+      const existingRepos = JSON.parse(localStorage.getItem(config.STORAGE_KEYS.REPOS) || '[]') as Repository[];
       const isDuplicate = existingRepos.some((repo) => repo.url === url);
 
       if (isDuplicate) {
@@ -62,17 +63,17 @@ export function AddRepoDialogBox({ open, onClose, onAdd }: AddRepoDialogBoxProps
       }
 
       // Get current repo URL from localStorage
-      const currentRepoUrl = localStorage.getItem('repo_url');
+      const currentRepoUrl = localStorage.getItem(config.STORAGE_KEYS.REPO_URL);
       
       // Only clean up API data if this is a different repository
       if (currentRepoUrl !== url) {
         const keysToRemove = [
-          'github_forks',
-          'github_contributors',
-          'github_issues',
-          'github_pull_requests',
-          'sast_security_threats',
-          'codeQualityResult'
+          config.STORAGE_KEYS.GITHUB_FORKS,
+          config.STORAGE_KEYS.GITHUB_CONTRIBUTORS,
+          config.STORAGE_KEYS.GITHUB_ISSUES,
+          config.STORAGE_KEYS.GITHUB_PULL_REQUESTS,
+          config.STORAGE_KEYS.SAST_SECURITY_THREATS,
+          config.STORAGE_KEYS.CODE_QUALITY_RESULT
         ];
         keysToRemove.forEach(key => localStorage.removeItem(key));
       }
@@ -85,12 +86,12 @@ export function AddRepoDialogBox({ open, onClose, onAdd }: AddRepoDialogBoxProps
       };
 
       // Save to repos array
-      localStorage.setItem('repos', JSON.stringify([...existingRepos, newRepo]));
+      localStorage.setItem(config.STORAGE_KEYS.REPOS, JSON.stringify([...existingRepos, newRepo]));
       
       // Save current repo URL and PAT for immediate use
-      localStorage.setItem('repo_url', url);
+      localStorage.setItem(config.STORAGE_KEYS.REPO_URL, url);
       if (pat) {
-        localStorage.setItem('github_pat', pat);
+        localStorage.setItem(config.STORAGE_KEYS.GITHUB_PAT, pat);
       }
 
       onAdd(false); // Notify parent that this is a new repo
@@ -100,8 +101,8 @@ export function AddRepoDialogBox({ open, onClose, onAdd }: AddRepoDialogBoxProps
       setPat('');
       onClose();
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to add repository');
       console.error('Error adding repository:', error);
+      setError('Failed to add repository. Please try again.');
     }
   };
 
@@ -116,7 +117,7 @@ export function AddRepoDialogBox({ open, onClose, onAdd }: AddRepoDialogBoxProps
   React.useEffect(() => {
     if (open) {
       // Get the most recently added repository
-      const repos = JSON.parse(localStorage.getItem('repos') || '[]') as Repository[];
+      const repos = JSON.parse(localStorage.getItem(config.STORAGE_KEYS.REPOS) || '[]') as Repository[];
       const lastRepo = repos[repos.length - 1];
       
       if (lastRepo) {
@@ -134,17 +135,23 @@ export function AddRepoDialogBox({ open, onClose, onAdd }: AddRepoDialogBoxProps
       onClose={handleCancel}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: {
-          background: `linear-gradient(135deg,${PRIMARY_COLOR} 0%, ${SECONDARY_COLOR} 100%)`,
-          borderRadius: 4,
-          boxShadow: '0 2px 16px 0 rgba(0,0,0,0.10)',
-          width: { xs: '90%', sm: '48%', md: '32%' },
-          height: error ? '38vh' : '32vh', // Increase height if there's an error
+      aria-labelledby="add-repo-dialog-title"
+      slotProps={{
+        paper: {
+          sx: {
+            background: `linear-gradient(135deg,${PRIMARY_COLOR} 0%, ${SECONDARY_COLOR} 100%)`,
+            borderRadius: 4,
+            boxShadow: '0 2px 16px 0 rgba(0,0,0,0.10)',
+            width: { xs: '90%', sm: '48%', md: '32%' },
+            height: error ? '38vh' : '32vh',
+          },
         },
       }}
     >
-      <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 0 }}>
+      <DialogTitle 
+        id="add-repo-dialog-title"
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 0 }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Typography variant="h4" fontWeight={700} component="span" sx={{ color: 'white' }}>
             Add Repository
@@ -320,13 +327,15 @@ export function RunAnalysisDialogBox({ open, onClose, onRun, isRunning = false }
       onClose={handleCancel}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: {
-          background: `linear-gradient(135deg, ${TERTIARY_COLOR} 10%, ${SECONDARY_COLOR} 100%)`,
-          borderRadius: 4,
-          boxShadow: '0 2px 16px 0 rgba(0,0,0,0.10)',
-          width: { xs: '90%', sm: '48%', md: '32%' },
-          height: '35vh',
+      slotProps={{
+        paper: {
+          sx: {
+            background: `linear-gradient(135deg, ${TERTIARY_COLOR} 10%, ${SECONDARY_COLOR} 100%)`,
+            borderRadius: 4,
+            boxShadow: '0 2px 16px 0 rgba(0,0,0,0.10)',
+            width: { xs: '90%', sm: '48%', md: '32%' },
+            height: '35vh',
+          },
         },
       }}
     >
@@ -474,6 +483,7 @@ const ForksDialogBox: React.FC<DialogBoxProps> = ({ open, onClose, label, number
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      aria-labelledby="forks-dialog-title"
       slotProps={{
         paper: {
           sx: {
@@ -486,6 +496,7 @@ const ForksDialogBox: React.FC<DialogBoxProps> = ({ open, onClose, label, number
       }}
     >
       <DialogTitle
+        id="forks-dialog-title"
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -669,6 +680,7 @@ export const ChartDialogBox: React.FC<ChartDialogBoxProps> = ({ open, onClose, l
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      aria-labelledby="chart-dialog-title"
       slotProps={{
         paper: {
           sx: {
@@ -681,6 +693,7 @@ export const ChartDialogBox: React.FC<ChartDialogBoxProps> = ({ open, onClose, l
       }}
     >
       <DialogTitle
+        id="chart-dialog-title"
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -848,10 +861,11 @@ export const PullRequestsDialogBox: React.FC<PullRequestsDialogBoxProps> = ({
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      aria-labelledby="pull-requests-dialog-title"
       slotProps={{
         paper: {
           sx: {
-            background: gradient || `linear-gradient(135deg, ${SECONDARY_COLOR} 0%, ${TERTIARY_COLOR} 100%)`,
+            background: gradient || `linear-gradient(135deg, ${SECONDARY_COLOR} 0%, ${PRIMARY_COLOR} 100%)`,
             borderRadius: 4,
             boxShadow: '0 2px 16px 0 rgba(0,0,0,0.10)',
             width: { xs: '90%', sm: '48%', md: '32%' },
@@ -859,7 +873,10 @@ export const PullRequestsDialogBox: React.FC<PullRequestsDialogBoxProps> = ({
         },
       }}
     >
-      <DialogTitle sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', pb: 0, position: 'relative' }}>
+      <DialogTitle 
+        id="pull-requests-dialog-title"
+        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', pb: 0, position: 'relative' }}
+      >
         <Box sx={{ display: 'flex', gap: 4, width: '100%', mt: 2 }}>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h5" fontWeight={700} sx={{ color: 'white', mb: 0.5 }}>Active PRs</Typography>
@@ -980,6 +997,7 @@ export const SecurityDialogBox: React.FC<SecurityDialogBoxProps> = ({ open, onCl
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      aria-labelledby="security-dialog-title"
       slotProps={{
         paper: {
           sx: {
@@ -992,6 +1010,7 @@ export const SecurityDialogBox: React.FC<SecurityDialogBoxProps> = ({ open, onCl
       }}
     >
       <DialogTitle
+        id="security-dialog-title"
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -1122,6 +1141,7 @@ export const HealthQualityDialogBox: React.FC<HealthQualityDialogBoxProps> = ({ 
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      aria-labelledby="health-quality-dialog-title"
       slotProps={{
         paper: {
           sx: {
@@ -1134,6 +1154,7 @@ export const HealthQualityDialogBox: React.FC<HealthQualityDialogBoxProps> = ({ 
       }}
     >
       <DialogTitle
+        id="health-quality-dialog-title"
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -1239,4 +1260,3 @@ export const HealthQualityDialogBox: React.FC<HealthQualityDialogBoxProps> = ({ 
     </Dialog>
   );
 };
-

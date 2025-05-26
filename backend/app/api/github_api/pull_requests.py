@@ -18,9 +18,9 @@ from urllib.parse import urlparse
 import httpx
 from datetime import datetime, timedelta
 from typing import List, Optional
+from ...core.config import settings
 
 router = APIRouter()
-GITHUB_GRAPHQL_URL = "https://api.github.com/graphql"
 
 class RepoRequest(BaseModel):
     repo_url: HttpUrl
@@ -105,7 +105,7 @@ async def get_pull_requests(data: RepoRequest):
         while True:
             try:
                 response = await client.post(
-                    GITHUB_GRAPHQL_URL,
+                    settings.GITHUB_GRAPHQL_URL,
                     json={"query": query, "variables": variables},
                     headers=headers
                 )
