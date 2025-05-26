@@ -5,14 +5,14 @@ import { Box, Typography, Button, Checkbox, FormControlLabel, TextField, Paper, 
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 import ChatbotIcon from '../../components/ChatbotIcon';
-import GradientCard from '../../components/GradientCard';
+import TestingToolsCard from '../../components/TestingToolsCard';
+import TestDocCard from '../../components/TestDocCard';
 import { authService } from '../../services/auth';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
 import FeaturedPlayListOutlinedIcon from '@mui/icons-material/FeaturedPlayListOutlined';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import { PRIMARY_COLOR, QUATERNARY_COLOR, SECONDARY_COLOR, ICON_COLOR } from '../../components/colors';
 
 export default function TestingToolsPage() {
@@ -23,12 +23,17 @@ export default function TestingToolsPage() {
     router.replace('/login');
   };
 
+  const handleTestDocGenerate = () => {
+    // Handle any post-generation actions if needed
+    console.log('Test documentation generated');
+  };
+
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#eae9e8', position: 'relative' }}>
       <Navbar activePage="testing-tools" handleLogout={handleLogout} />
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 48px)' }}>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} sx={{ mb: 6, position: 'relative' }}>
-          <GradientCard
+          <TestingToolsCard
             icon={<ChecklistOutlinedIcon />}
             title="Generate Unit Tests"
             description={
@@ -38,7 +43,7 @@ export default function TestingToolsPage() {
             iconColor={ICON_COLOR}
             sx={{ minHeight: 420 }}
           />
-          <GradientCard
+          <TestingToolsCard
             icon={<FeaturedPlayListOutlinedIcon />}
             title="Generate Functional Tests"
             description={
@@ -48,16 +53,7 @@ export default function TestingToolsPage() {
             iconColor={ICON_COLOR}
             sx={{ minHeight: 420 }}
           />
-          <GradientCard
-            icon={<DescriptionOutlinedIcon />}
-            title="Generate Test Documentation"
-            description={
-              'This generates Test Strategy Document, Recommended Folder Structure For Automation, Etc.'
-            }
-            gradient={`linear-gradient(135deg, ${SECONDARY_COLOR} 0%, ${PRIMARY_COLOR} 100%)`}
-            iconColor={ICON_COLOR}
-            sx={{ minHeight: 420 }}
-          />
+          <TestDocCard onGenerate={handleTestDocGenerate} />
         </Stack>
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 6, mb: 4 }}>
           <FormControlLabel control={<Checkbox />} label="Automation" />

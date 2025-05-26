@@ -16,12 +16,46 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SpeedIcon from '@mui/icons-material/Speed';
 import NoDataError from '@/components/NoDataError';
+import LastScanTime from '@/components/LastScanTime';
 
 // Define HealthQualityDialogBoxFile locally since it's not exported
 interface HealthQualityDialogBoxFile {
   file: string;
   suggestions?: string[];
   summary?: string;
+}
+
+interface QualityTiming {
+  repository_clone: number;
+  file_sampling: number;
+  static_analysis: number;
+  ai_analysis: number;
+  other: number;
+  total_seconds: number;
+}
+
+interface QualityData {
+  files_analyzed: {
+    total: number;
+    by_language: Record<string, number>;
+  };
+  issues: {
+    linting: number;
+    todos: number;
+    files_without_docs: number;
+    todos_files: string[];
+    duplicate_files: string[];
+    files_without_docs_list: string[];
+  };
+  top_issues: Array<{
+    file: string;
+    summary: string;
+    suggestions: string[];
+    before: string;
+    after: string | null;
+  }>;
+  quality_score: number;
+  timing: QualityTiming;
 }
 
 export default function HealthQualityPage() {
@@ -36,11 +70,32 @@ export default function HealthQualityPage() {
   const [dialogFiles, setDialogFiles] = useState<HealthQualityDialogBoxFile[]>([]);
   const [dialogGradient, setDialogGradient] = useState('');
   const [dialogDescription, setDialogDescription] = useState('');
+  const [scanTime, setScanTime] = useState<number | undefined>(undefined);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    try {
       const data = localStorage.getItem('codeQualityResult');
-      setHasQualityData(!!data && data !== '{}' && data !== 'null');
+      console.log('Quality data from localStorage:', data);
+      if (data) {
+        try {
+          const parsed = JSON.parse(data) as QualityData;
+          console.log('Parsed quality data:', parsed);
+          console.log('Timing data:', parsed.timing);
+          if (parsed.timing?.total_seconds) {
+            console.log('Setting scan time to:', parsed.timing.total_seconds);
+            setScanTime(parsed.timing.total_seconds);
+          }
+          setHasQualityData(true);
+        } catch (e) {
+          console.error('Error parsing quality data:', e);
+          setHasQualityData(false);
+        }
+      } else {
+        setHasQualityData(false);
+      }
+    } catch (e) {
+      console.error('Error accessing localStorage:', e);
+      setHasQualityData(false);
     }
   }, []);
 
@@ -56,13 +111,14 @@ export default function HealthQualityPage() {
     issues?: { linting?: number; todos?: number; files_without_docs?: number };
     top_issues?: { file: string; summary?: string; suggestions?: string[] }[];
     quality_score?: number;
+    scan_time?: number; // Time taken for the scan in seconds
   } | undefined = undefined;
   if (typeof window !== 'undefined') {
     const raw = localStorage.getItem('codeQualityResult');
     if (raw) {
       try {
         codeQualityData = JSON.parse(raw);
-        if (typeof codeQualityData.quality_score === 'number') {
+        if (codeQualityData && typeof codeQualityData.quality_score === 'number') {
           qualityScore = Math.round(codeQualityData.quality_score * 10);
         }
       } catch {}
@@ -108,21 +164,16 @@ export default function HealthQualityPage() {
         };
       }
       case 'Total Issues': {
-        // Prepare breakdown and affected files for linting, todos, and files without docs
         const lintingCount = codeQualityData?.issues?.linting ?? 0;
         const todosCount = codeQualityData?.issues?.todos ?? 0;
         const docsCount = codeQualityData?.issues?.files_without_docs ?? 0;
-        // Try to extract files for each issue type from top_issues (if available)
         const lintingFiles = Array.isArray(codeQualityData?.top_issues)
           ? codeQualityData.top_issues.filter(f => (f.summary || '').toLowerCase().includes('lint') || (f.summary || '').toLowerCase().includes('eslint'))
           : [];
         const todoFiles = Array.isArray(codeQualityData?.top_issues)
           ? codeQualityData.top_issues.filter(f => (f.summary || '').toLowerCase().includes('todo'))
           : [];
-        // Use the files_without_docs_list from the API response if available
-        const docsFiles: string[] = Array.isArray(codeQualityData?.issues?.files_without_docs_list)
-          ? codeQualityData.issues.files_without_docs_list
-          : [];
+        const docsFiles: string[] = [];
         const files: HealthQualityDialogBoxFile[] = [];
         if (lintingCount > 0) {
           files.push({
@@ -145,14 +196,13 @@ export default function HealthQualityPage() {
             summary: `Total: ${docsCount}`
           });
         }
-        // If no files, show a summary
         if (files.length === 0) {
           files.push({ file: 'No issues found', suggestions: [], summary: '' });
         }
         return {
           files,
           number: lintingCount + todosCount + docsCount,
-          description: '' // Hide description in dialog
+          description: ''
         };
       }
       case 'Linting Issues': {
@@ -215,21 +265,9 @@ export default function HealthQualityPage() {
         };
       }
       case 'Files Without Docs': {
-        // Use the files_without_docs_list from the API response if available
-        const docsFiles: string[] = Array.isArray(codeQualityData?.issues?.files_without_docs_list)
-          ? codeQualityData.issues.files_without_docs_list
-          : [];
         const docsCount = codeQualityData?.issues?.files_without_docs ?? 0;
         let files: HealthQualityDialogBoxFile[];
-        if (docsCount > 0 && docsFiles.length > 0) {
-          files = [
-            {
-              file: 'Files Without Docs',
-              suggestions: docsFiles,
-              summary: `Total: ${docsCount}`
-            }
-          ];
-        } else if (docsCount > 0) {
+        if (docsCount > 0) {
           files = [
             {
               file: 'Files Without Docs',
@@ -383,6 +421,7 @@ export default function HealthQualityPage() {
         )}
       </Box>
       <ChatbotIcon />
+      {hasQualityData && <LastScanTime scanTime={scanTime} />}
       <HealthQualityDialogBox
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

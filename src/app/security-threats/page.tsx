@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Stack } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
@@ -18,6 +18,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import ScoreIcon from '@mui/icons-material/Score';
 import NoDataError from '@/components/NoDataError';
+import LastScanTime from '@/components/LastScanTime';
 
 // Add TypeScript interfaces for SAST API response
 interface SastIssue {
@@ -66,7 +67,14 @@ interface SastSeveritySummary {
 }
 
 interface SastTiming {
-  total_time: number;
+  total_seconds: number;
+  breakdown?: {
+    git_clone_seconds: number;
+    semgrep_seconds: number;
+    gitleaks_seconds: number;
+    dependency_audit_seconds: number;
+    aggregation_seconds: number;
+  };
 }
 
 interface SastData {
@@ -114,6 +122,8 @@ export default function SecurityThreatsPage() {
   const [dialogNumber, setDialogNumber] = React.useState(0);
   const [dialogFiles, setDialogFiles] = React.useState<{ file: string; suggestions: string[] }[]>([]);
   const [dialogGradient, setDialogGradient] = React.useState<string>('');
+  const [scanTime, setScanTime] = useState<number | undefined>(undefined);
+  const [hasData, setHasData] = useState(false);
 
   const handleLogout = () => {
     authService.logout();
@@ -239,7 +249,7 @@ export default function SecurityThreatsPage() {
             description: [
               `Critical/High Issues: ${typeof severitySummary.critical === 'number' ? severitySummary.critical : 0}`,
               `Total Issues: ${Object.values(severitySummary).reduce((sum, count) => sum + (typeof count === 'number' ? count : 0), 0)}`,
-              `Scan Time: ${data.timing?.total_time ? Math.round(data.timing.total_time) : 0}s`
+              `Scan Time: ${data.timing?.total_seconds ? Math.round(data.timing.total_seconds) : 0}s`
             ].join('\n')
           }],
           number: typeof data.remediation_score === 'number' ? Math.round(data.remediation_score) : 0
@@ -256,7 +266,7 @@ export default function SecurityThreatsPage() {
               `Medium Issues: ${typeof severitySummary.medium === 'number' ? severitySummary.medium : 0}`,
               `Low Issues: ${typeof severitySummary.low === 'number' ? severitySummary.low : 0}`,
               `Info Issues: ${typeof severitySummary.info === 'number' ? severitySummary.info : 0}`,
-              `Scan Time: ${data.timing?.total_time ? Math.round(data.timing.total_time) : 0}s`
+              `Scan Time: ${data.timing?.total_seconds ? Math.round(data.timing.total_seconds) : 0}s`
             ].join('\n')
           }],
           number: typeof data.vulnerability_score === 'number' ? Math.round(data.vulnerability_score) : 0
@@ -266,9 +276,9 @@ export default function SecurityThreatsPage() {
     }
   };
 
-  // Check if security data is available
+  // Helper to check if security data is available
   const hasSecurityData = () => {
-    return localStorage.getItem('sast_security_threats') !== null;
+    return hasData;
   };
 
   const handleRunAnalysis = async () => {
@@ -283,6 +293,34 @@ export default function SecurityThreatsPage() {
       setExpanded(null);
     }
   };
+
+  // Add useEffect to get scan time from localStorage
+  useEffect(() => {
+    try {
+      const data = localStorage.getItem('sast_security_threats');
+      console.log('Security data from localStorage:', data);
+      if (data) {
+        try {
+          const parsed = JSON.parse(data) as SastData;
+          console.log('Parsed security data:', parsed);
+          console.log('Timing data:', parsed.timing);
+          if (parsed.timing?.total_seconds) {
+            console.log('Setting scan time to:', parsed.timing.total_seconds);
+            setScanTime(parsed.timing.total_seconds);
+          }
+          setHasData(true);
+        } catch (e) {
+          console.error('Error parsing security data:', e);
+          setHasData(false);
+        }
+      } else {
+        setHasData(false);
+      }
+    } catch (e) {
+      console.error('Error accessing localStorage:', e);
+      setHasData(false);
+    }
+  }, []);
 
   return (
     <Box sx={{ minHeight: '80vh', bgcolor: BG_COLOR }}>
@@ -414,6 +452,7 @@ export default function SecurityThreatsPage() {
         )}
       </Box>
       <ChatbotIcon />
+      {hasData && <LastScanTime scanTime={scanTime} />}
       <SecurityDialogBox
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
