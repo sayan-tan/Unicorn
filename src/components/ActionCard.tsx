@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
 
-interface GradientCardProps {
+interface ActionCardProps {
   icon: ReactNode;
   title: React.ReactNode;
   description?: React.ReactNode;
@@ -12,7 +12,7 @@ interface GradientCardProps {
   onClick?: () => void;
 }
 
-export default function GradientCard({ icon, title, description, gradient, iconColor, sx, onClick }: GradientCardProps) {
+export default function ActionCard({ icon, title, description, gradient, iconColor, sx, onClick }: ActionCardProps) {
   return (
     <Paper
       elevation={0}

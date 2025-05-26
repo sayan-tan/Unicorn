@@ -7,10 +7,11 @@ import { Box, Snackbar, Alert } from '@mui/material';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import Navbar from '../../components/Navbar';
-import GradientCard from '../../components/GradientCard';
+import ActionCard from '../../components/ActionCard';
 import { AddRepoDialogBox, RunAnalysisDialogBox } from '../../components/DialogBox';
 import ChatbotIcon from '../../components/ChatbotIcon';
 import { PRIMARY_COLOR, SECONDARY_COLOR, TERTIARY_COLOR, ICON_COLOR } from '../../components/colors';
+import config from '../../config';
 
 type ToastType = 'success' | 'duplicate' | 'timing';
 
@@ -46,8 +47,8 @@ export default function HomePage() {
   };
 
   const handleRunAnalysis = async (selected: string[]) => {
-    const repoUrl = localStorage.getItem('repo_url');
-    const patToken = localStorage.getItem('github_pat');
+    const repoUrl = localStorage.getItem(config.STORAGE_KEYS.REPO_URL);
+    const patToken = localStorage.getItem(config.STORAGE_KEYS.GITHUB_PAT);
 
     if (!repoUrl || !patToken) {
       console.error('Repository URL or PAT token not found');
@@ -62,22 +63,22 @@ export default function HomePage() {
       if (selected.includes('Github Insights')) {
         // Call all Github Insights APIs in parallel
         const [forksRes, contributorsRes, issuesRes, pullRequestsRes] = await Promise.all([
-          fetch('http://localhost:8000/api/v1/github/forks', {
+          fetch(`${config.API_BASE_URL}/api/v1/github/forks`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ repo_url: repoUrl, pat_token: patToken }),
           }),
-          fetch('http://localhost:8000/api/v1/github/contributors', {
+          fetch(`${config.API_BASE_URL}/api/v1/github/contributors`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ repo_url: repoUrl, pat_token: patToken }),
           }),
-          fetch('http://localhost:8000/api/v1/github/issues', {
+          fetch(`${config.API_BASE_URL}/api/v1/github/issues`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ repo_url: repoUrl, pat_token: patToken }),
           }),
-          fetch('http://localhost:8000/api/v1/github/pull-requests', {
+          fetch(`${config.API_BASE_URL}/api/v1/github/pull-requests`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ repo_url: repoUrl, pat_token: patToken }),
@@ -87,20 +88,20 @@ export default function HomePage() {
         const contributorsData = await contributorsRes.json();
         const issuesData = await issuesRes.json();
         const pullRequestsData = await pullRequestsRes.json();
-        localStorage.setItem('github_forks', JSON.stringify(forksData));
-        localStorage.setItem('github_contributors', JSON.stringify(contributorsData));
-        localStorage.setItem('github_issues', JSON.stringify(issuesData));
-        localStorage.setItem('github_pull_requests', JSON.stringify(pullRequestsData));
+        localStorage.setItem(config.STORAGE_KEYS.GITHUB_FORKS, JSON.stringify(forksData));
+        localStorage.setItem(config.STORAGE_KEYS.GITHUB_CONTRIBUTORS, JSON.stringify(contributorsData));
+        localStorage.setItem(config.STORAGE_KEYS.GITHUB_ISSUES, JSON.stringify(issuesData));
+        localStorage.setItem(config.STORAGE_KEYS.GITHUB_PULL_REQUESTS, JSON.stringify(pullRequestsData));
       }
 
       if (selected.includes('Security & Threats')) {
-        const res = await fetch('http://localhost:8000/api/v1/sast/scan', {
+        const res = await fetch(`${config.API_BASE_URL}/api/v1/sast/scan`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ repo_url: repoUrl, pat_token: patToken }),
         });
         const data = await res.json();
-        localStorage.setItem('sast_security_threats', JSON.stringify(data));
+        localStorage.setItem(config.STORAGE_KEYS.SAST_SECURITY_THREATS, JSON.stringify(data));
         
         // Show timing notification
         if (data.timing) {
@@ -117,13 +118,13 @@ export default function HomePage() {
       }
 
       if (selected.includes('Health & Quality')) {
-        const res = await fetch('http://localhost:8000/api/v1/scan/code_quality.api', {
+        const res = await fetch(`${config.API_BASE_URL}/api/v1/scan/code_quality.api`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ repoUrl: repoUrl, patToken: patToken }),
         });
         const data = await res.json();
-        localStorage.setItem('codeQualityResult', JSON.stringify(data));
+        localStorage.setItem(config.STORAGE_KEYS.CODE_QUALITY_RESULT, JSON.stringify(data));
       }
     } catch (err) {
       console.error('Error running analysis:', err);
@@ -195,7 +196,7 @@ export default function HomePage() {
         ) : (
           <>
             <Box onClick={() => setExpanded('addRepo')} sx={{ cursor: 'pointer', width: 'fit-content' }}>
-              <GradientCard
+              <ActionCard
                 icon={<AddCircleOutlineOutlinedIcon />}
                 title="Add Repository"
                 description="This opens a dialog to input a GitHub repo, fetches its metadata using the URL & PAT, and stores it for analysis."
@@ -205,7 +206,7 @@ export default function HomePage() {
               />
             </Box>
             <Box onClick={() => setExpanded('runAnalysis')} sx={{ cursor: 'pointer', width: 'fit-content' }}>
-              <GradientCard
+              <ActionCard
                 icon={<QueryStatsIcon />}
                 title="Run Analysis"
                 description="This opens a dialog to select analysis types, then triggers selected scans and stores the results for display."
