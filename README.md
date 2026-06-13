@@ -1,92 +1,123 @@
-# Dashboard App
+# Unicorn (CodeCoach)
 
-A modern, full-stack dashboard application built with JavaScript/TypeScript, React, and Next.js. This project provides code quality, security, and health insights for your repositories, with a beautiful and interactive UI.
+A full-stack demo dashboard for **code quality**, **security (SAST)**, and **GitHub** insights, with a Next.js UI and a FastAPI backend.
 
 ## Features
-- Code quality and security analysis
-- Health and documentation insights
-- Interactive dashboard UI
-- Integration with GitHub
-- Modern tech stack: React, Next.js, TypeScript
 
-## Getting Started
+- Code quality scans (clone + static analysis + AI summaries)
+- Security scanning (Semgrep, Gitleaks, dependency checks) when those tools are installed
+- GitHub insights (forks, contributors, issues, pull requests)
+- Context-aware chat assistant (OpenAI)
 
-### Prerequisites
-- Node.js (v16 or higher recommended)
-- npm or yarn
+## Prerequisites
 
-### Environment Setup
-The application requires a GitHub Personal Access Token to be set up. Follow these steps to configure your environment:
+- **Node.js** 18+ (project uses Next.js 15)
+- **Python** 3.10+
+- **Git** (backend clones repositories for scans)
+- Optional: **Semgrep**, **Gitleaks**, **npm**, **pylint**, **eslint**, **radon** for full scan parity
 
-1. Create a `.env` file in the root directory of the project
-2. Add your GitHub Personal Access Token to the `.env` file:
+## Quick start
+
+### 1. Clone and install
+
 ```bash
-# GitHub Configuration
-GITHUB_TOKEN=your_github_personal_access_token
-```
-
-Important notes:
-- Never commit your `.env` file to version control
-- Keep your tokens and secrets secure
-- The `.env` file is already included in `.gitignore`
-
-To generate a GitHub token:
-1. Go to GitHub Settings > Developer Settings > Personal Access Tokens
-2. Generate a new token with the following permissions:
-   - `repo` (for private repositories)
-   - `read:org` (for organization access)
-   - `read:user` (for user data)
-
-### Installation
-```bash
-# Clone the repository
-git clone https://github.com/sayan-tan/dashboardApp.git
-cd dashboardApp
-
-# Install dependencies
+git clone https://github.com/sayan-tan/Unicorn.git
+cd Unicorn
 npm install
-# or
-yarn install
 ```
 
-### Running the App
+### 2. Backend (single entrypoint)
+
+Run the API from the **`backend`** directory so configuration loads correctly:
+
 ```bash
-# Start the development server
-npm run dev
-# or
-yarn dev
+cd backend
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python run.py
 ```
 
-The app will be available at [http://localhost:3000](http://localhost:3000).
+The API serves at [http://localhost:8000](http://localhost:8000) (see `backend/run.py` → `app.main:app`).
 
-### Building for Production
+### 3. Frontend
+
+From the **repository root** (in a second terminal):
+
+```bash
+npm run dev
+```
+
+The app is at [http://localhost:3000](http://localhost:3000).
+
+### 4. Environment variables
+
+Create **`backend/.env`** (loaded when you start the API from `backend/`):
+
+```bash
+# Required for GitHub API routes and cloning (use a classic PAT with repo scope as needed)
+GITHUB_TOKEN=your_github_personal_access_token
+
+# Required for AI chat and code-quality AI steps
+OPENAI_API_KEY=your_openai_api_key
+
+# Optional: set in production; demo defaults are insecure
+SECRET_KEY=your_random_secret
+```
+
+Create **`.env.local`** in the repo root for the Next app if you change API origin:
+
+```bash
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+```
+
+Never commit `.env` or `.env.local`; they are gitignored.
+
+### Demo login
+
+Authentication is **stubbed for demos** only. Valid accounts:
+
+| Email | Password |
+| --- | --- |
+| `demouser@example.com` | `password123` |
+| `demo@example.com` | `password123` |
+
+## Production build (frontend)
+
 ```bash
 npm run build
 npm start
-# or
-yarn build
-yarn start
 ```
 
-## Project Structure
+## Project structure
+
 ```
-/ (root)
-├── src/                # Application source code
-├── public/             # Static assets
-├── .gitignore          # Ignored files
-├── README.md           # Project documentation
-├── package.json        # Project metadata and scripts
-└── ...
+.
+├── backend/
+│   ├── run.py              # Start here: uvicorn app.main:app
+│   ├── app/
+│   │   ├── main.py         # FastAPI app factory
+│   │   ├── api/            # Routers (auth, chatbot, scans, GitHub, SAST)
+│   │   └── core/           # Settings, security
+│   ├── context/            # Chatbot context files
+│   └── requirements.txt
+├── src/                    # Next.js app (App Router)
+├── public/
+├── package.json
+└── README.md
 ```
+
+## GitHub token
+
+To create a token: GitHub → **Settings** → **Developer settings** → **Personal access tokens**. For private repos, include **`repo`**; for org visibility you may need **`read:org`** and **`read:user`** as appropriate.
 
 ## Contributing
-Contributions are welcome! Please open issues and submit pull requests for improvements or bug fixes.
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/YourFeature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/YourFeature`)
-5. Open a pull request
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes
+4. Push and open a pull request
 
 ## License
+
 This project is licensed under the MIT License.
