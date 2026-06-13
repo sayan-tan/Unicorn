@@ -528,7 +528,6 @@ const ForksDialogBox: React.FC<DialogBoxProps> = ({ open, onClose, label, number
           fontWeight={700}
           sx={{
             color: 'white',
-            fontFamily: 'Roboto Mono, monospace',
             fontSize: 32,
             textAlign: 'left',
             mb: 0.5,
@@ -589,7 +588,6 @@ const ForksDialogBox: React.FC<DialogBoxProps> = ({ open, onClose, label, number
                       variant="body1"
                       sx={{
                         color: 'white',
-                        fontFamily: 'Roboto Mono, monospace',
                         fontWeight: 700,
                         fontSize: 18,
                         minWidth: 40,
@@ -725,7 +723,6 @@ export const ChartDialogBox: React.FC<ChartDialogBoxProps> = ({ open, onClose, l
           fontWeight={700}
           sx={{
             color: 'white',
-            fontFamily: 'Roboto Mono, monospace',
             fontSize: 32,
             textAlign: 'left',
             mb: 0.5,
@@ -880,11 +877,11 @@ export const PullRequestsDialogBox: React.FC<PullRequestsDialogBoxProps> = ({
         <Box sx={{ display: 'flex', gap: 4, width: '100%', mt: 2 }}>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h5" fontWeight={700} sx={{ color: 'white', mb: 0.5 }}>Active PRs</Typography>
-            <Typography variant="h3" fontWeight={700} sx={{ color: 'white', fontFamily: 'Roboto Mono, monospace', fontSize: 32 }}>{activeCount}</Typography>
+            <Typography variant="h3" fontWeight={700} sx={{ color: 'white',  fontSize: 32 }}>{activeCount}</Typography>
           </Box>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h5" fontWeight={700} sx={{ color: 'white', mb: 0.5 }}>Merged PRs</Typography>
-            <Typography variant="h3" fontWeight={700} sx={{ color: 'white', fontFamily: 'Roboto Mono, monospace', fontSize: 32 }}>{mergedCount}</Typography>
+            <Typography variant="h3" fontWeight={700} sx={{ color: 'white',  fontSize: 32 }}>{mergedCount}</Typography>
           </Box>
         </Box>
         <IconButton onClick={onClose} size="large" sx={{ position: 'absolute', right: 16, top: 16, color: 'white' }}>
@@ -1042,7 +1039,6 @@ export const SecurityDialogBox: React.FC<SecurityDialogBoxProps> = ({ open, onCl
           fontWeight={700}
           sx={{
             color: 'white',
-            fontFamily: 'Roboto Mono, monospace',
             fontSize: 32,
             textAlign: 'left',
             mb: 0.5,
@@ -1085,7 +1081,6 @@ export const SecurityDialogBox: React.FC<SecurityDialogBoxProps> = ({ open, onCl
                         variant="body2"
                         sx={{
                           color: 'white',
-                          fontFamily: 'Roboto Mono, monospace',
                           fontSize: 13,
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
@@ -1100,7 +1095,7 @@ export const SecurityDialogBox: React.FC<SecurityDialogBoxProps> = ({ open, onCl
                       {Array.isArray(item.suggestions) && item.suggestions.length > 0 && (
                         <Box component="ul" sx={{ ml: 2, mt: 0.5, pl: 2, mb: 0, color: 'white' }}>
                           {item.suggestions.map((s, i) => (
-                            <li key={i} style={{ marginBottom: 4, fontSize: 14, fontFamily: 'Roboto Mono, monospace', opacity: 0.85, lineHeight: 1.5 }}>{s}</li>
+                            <li key={i} style={{ marginBottom: 4, fontSize: 14,  opacity: 0.85, lineHeight: 1.5 }}>{s}</li>
                           ))}
                         </Box>
                       )}
@@ -1186,7 +1181,6 @@ export const HealthQualityDialogBox: React.FC<HealthQualityDialogBoxProps> = ({ 
           fontWeight={700}
           sx={{
             color: 'white',
-            fontFamily: 'Roboto Mono, monospace',
             fontSize: 32,
             textAlign: 'left',
             mb: 0.5,
@@ -1227,7 +1221,6 @@ export const HealthQualityDialogBox: React.FC<HealthQualityDialogBoxProps> = ({ 
                       variant="body2"
                       sx={{
                         color: 'white',
-                        fontFamily: 'Roboto Mono, monospace',
                         fontSize: 13,
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
@@ -1245,7 +1238,7 @@ export const HealthQualityDialogBox: React.FC<HealthQualityDialogBoxProps> = ({ 
                     {Array.isArray(item.suggestions) && item.suggestions.length > 0 && (
                       <Box component="ul" sx={{ ml: 2, mt: 0.5, pl: 2, mb: 0, color: 'white' }}>
                         {item.suggestions.map((s, i) => (
-                          <li key={i} style={{ marginBottom: 4, fontSize: 14, fontFamily: 'Roboto Mono, monospace', opacity: 0.85, lineHeight: 1.5 }}>{s}</li>
+                          <li key={i} style={{ marginBottom: 4, fontSize: 14,  opacity: 0.85, lineHeight: 1.5 }}>{s}</li>
                         ))}
                       </Box>
                     )}

@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
 import ChatbotIcon from '../../components/ChatbotIcon';
 import TestingToolsCard from '../../components/TestingToolsCard';
-import TestDocCard from '../../components/TestDocCard';
 import { authService } from '../../services/auth';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
 import FeaturedPlayListOutlinedIcon from '@mui/icons-material/FeaturedPlayListOutlined';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import { PRIMARY_COLOR, QUATERNARY_COLOR, SECONDARY_COLOR, ICON_COLOR } from '../../components/colors';
 
 export default function TestingToolsPage() {
@@ -53,7 +53,18 @@ export default function TestingToolsPage() {
             iconColor={ICON_COLOR}
             sx={{ minHeight: 420 }}
           />
-          <TestDocCard onGenerate={handleTestDocGenerate} />
+          <TestingToolsCard
+            icon={<ArticleOutlinedIcon />}
+            title="Generate Test Documentation"
+            description={
+              'Produces structured test documentation from your code or existing tests so teams can review coverage and scenarios in one place.'
+            }
+            gradient="linear-gradient(135deg, #997966 0%, #299d90 100%)"
+            iconColor="#2f2e41"
+            sx={{ minHeight: 420 }}
+            primaryAction={{ label: 'Generate', onClick: handleTestDocGenerate }}
+            ariaLabel="Generate test documentation"
+          />
         </Stack>
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 6, mb: 4 }}>
           <FormControlLabel control={<Checkbox />} label="Automation" />

@@ -1,6 +1,12 @@
 import React, { ReactNode } from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 import { SxProps, Theme } from '@mui/material/styles';
+import styles from './ActionCard.module.css';
+
+export interface ActionCardPrimaryAction {
+  label: string;
+  onClick: () => void;
+}
 
 interface ActionCardProps {
   icon: ReactNode;
@@ -10,12 +16,28 @@ interface ActionCardProps {
   iconColor?: string;
   sx?: SxProps<Theme>;
   onClick?: () => void;
+  /** Optional CTA rendered at the bottom of the card (e.g. Generate). */
+  primaryAction?: ActionCardPrimaryAction;
+  /** When set, the card is exposed as a landmark for assistive tech. */
+  ariaLabel?: string;
 }
 
-export default function ActionCard({ icon, title, description, gradient, iconColor, sx, onClick }: ActionCardProps) {
+export default function ActionCard({
+  icon,
+  title,
+  description,
+  gradient,
+  iconColor,
+  sx,
+  onClick,
+  primaryAction,
+  ariaLabel,
+}: ActionCardProps) {
   return (
     <Paper
+      component={ariaLabel ? 'section' : 'div'}
       elevation={0}
+      aria-label={ariaLabel}
       sx={{
         background: gradient,
         borderRadius: 4,
@@ -85,7 +107,6 @@ export default function ActionCard({ icon, title, description, gradient, iconCol
             color: 'white',
             textAlign: 'center',
             opacity: 0.95,
-            fontFamily: 'Roboto Mono, monospace',
             fontSize: { xs: '0.95rem', sm: '1.05rem' },
             letterSpacing: 0.5,
             width: '90%',
@@ -98,6 +119,19 @@ export default function ActionCard({ icon, title, description, gradient, iconCol
           {description}
         </Typography>
       )}
+
+      {primaryAction && (
+        <button
+          type="button"
+          className={styles.primaryAction}
+          onClick={(e) => {
+            e.stopPropagation();
+            primaryAction.onClick();
+          }}
+        >
+          {primaryAction.label}
+        </button>
+      )}
     </Paper>
   );
-} 
+}

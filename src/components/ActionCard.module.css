@@ -1,0 +1,24 @@
+.primaryAction {
+  margin-top: auto;
+  margin-bottom: 24px;
+  background-color: #fff;
+  color: #2f2e41;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 28px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.primaryAction:hover {
+  background-color: #9bd4b2;
+  color: #23243a;
+}
+
+.primaryAction:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

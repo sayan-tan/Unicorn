@@ -85,7 +85,6 @@ export default function InsightsCard({ icon, title, description, gradient, iconC
             color: 'white',
             textAlign: 'center',
             opacity: 0.95,
-            fontFamily: 'Roboto Mono, monospace',
             fontSize: { xs: '0.95rem', sm: '1.05rem' },
             letterSpacing: 0.5,
             width: '90%',

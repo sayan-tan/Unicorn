@@ -65,11 +65,11 @@ const IssueDialogBox: React.FC<IssueDialogBoxProps> = ({
         <Box sx={{ display: 'flex', gap: 4, width: '100%', mt: 2 }}>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h5" fontWeight={700} sx={{ color: 'white', mb: 0.5 }}>Opened Issues</Typography>
-            <Typography variant="h3" fontWeight={700} sx={{ color: 'white', fontFamily: 'Roboto Mono, monospace', fontSize: 32 }}>{openedCount}</Typography>
+            <Typography variant="h3" fontWeight={700} sx={{ color: 'white',  fontSize: 32 }}>{openedCount}</Typography>
           </Box>
           <Box sx={{ flex: 1 }}>
             <Typography variant="h5" fontWeight={700} sx={{ color: 'white', mb: 0.5 }}>Closed Issues</Typography>
-            <Typography variant="h3" fontWeight={700} sx={{ color: 'white', fontFamily: 'Roboto Mono, monospace', fontSize: 32 }}>{closedCount}</Typography>
+            <Typography variant="h3" fontWeight={700} sx={{ color: 'white',  fontSize: 32 }}>{closedCount}</Typography>
           </Box>
         </Box>
         <IconButton onClick={onClose} size="large" sx={{ position: 'absolute', right: 16, top: 16, color: 'white' }}>

@@ -75,7 +75,6 @@ export default function LastScanTime({ scanTime }: LastScanTimeProps) {
               color: 'white',
               fontSize: 14,
               fontWeight: 500,
-              fontFamily: 'Roboto, sans-serif',
               whiteSpace: 'nowrap',
             }}
           >
