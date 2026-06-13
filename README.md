@@ -21,7 +21,7 @@ A full-stack demo dashboard for **code quality**, **security (SAST)**, and **Git
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/sayan-tan/Unicorn.git
+git clone https://github.com/sayan-tan/ReviewMate.git
 cd Unicorn
 npm install
 ```
