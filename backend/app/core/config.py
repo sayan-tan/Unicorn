@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     """Application settings."""
     # Project Info
-    PROJECT_NAME: str = "Unicorn API"
+    PROJECT_NAME: str = "ReviewMate API"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
     

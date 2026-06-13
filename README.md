@@ -1,4 +1,4 @@
-# Unicorn (CodeCoach)
+# ReviewMate
 
 A full-stack demo dashboard for **code quality**, **security (SAST)**, and **GitHub** insights, with a Next.js UI and a FastAPI backend.
 

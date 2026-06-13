@@ -31,4 +31,4 @@ app.include_router(sast_api.router, prefix="/api/v1/sast", tags=["sast"])
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to CodeCoach API"} 
+    return {"message": "Welcome to ReviewMate API"} 
