@@ -12,7 +12,9 @@ How it works:
 Intention:
     The goal is to keep your account and data safe, making sure only you (or people you allow) can access your information and use the platform.
 """
-from fastapi import APIRouter, HTTPException, Depends, status
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, EmailStr
 from datetime import timedelta
 from ..core.security import create_access_token
@@ -27,15 +29,26 @@ class LoginRequest(BaseModel):
 class LoginResponse(BaseModel):
     success: bool
     message: str
-    token: str = None
+    token: Optional[str] = None
+
+# Demo accounts (password must pass frontend rules: 8+ chars and a digit)
+_DEMO_EMAILS = frozenset(
+    {
+        "demouser@example.com",
+        "demo@example.com",
+    }
+)
+
 
 @router.post("/login", response_model=LoginResponse)
 async def login(data: LoginRequest):
     # Dummy authentication logic
-    if data.email == "demouser@example.com" and data.password == "password123":
+    email = str(data.email).strip().lower()
+    password = (data.password or "").strip()
+    if email in _DEMO_EMAILS and password == "password123":
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
-            data={"sub": data.email}, expires_delta=access_token_expires
+            data={"sub": email}, expires_delta=access_token_expires
         )
         return {"success": True, "message": "Login successful!", "token": access_token}
     else:
